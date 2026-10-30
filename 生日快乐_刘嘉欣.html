@@ -773,7 +773,8 @@
                 box.setFromObject(cake);
                 const center = box.getCenter(new THREE.Vector3());
                 cake.position.x = -center.x;
-                cake.position.y = -box.min.y - 0.8; // 向下移动0.8单位，避免偏上
+                // 手机上照片占顶部，蛋糕往下移避免被挡住
+                cake.position.y = -box.min.y - (window.innerWidth < 768 ? 1.4 : 0.8);
                 cake.position.z = -center.z;
                 
                 console.log('模型最终位置：', cake.position);
@@ -821,6 +822,9 @@
                 
                 console.log('� 外部模型加载失败，使用精美的程序化蛋糕...');
                 cake = createFallbackCake();
+                if (window.innerWidth < 768) {
+                    cake.position.y -= 1.0;  // 手机下移，避免被照片挡住
+                }
                 scene.add(cake);
                 console.log('✅ 程序化蛋糕已添加到场景');
             }

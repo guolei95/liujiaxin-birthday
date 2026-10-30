@@ -257,7 +257,7 @@
             75% { transform: rotate(-3deg); }
         }
 
-        /* 手机小屏适配：缩小相框，避免照片挤在一起 */
+        /* 手机小屏适配：缩小相框、调小文字、防止遮挡 */
         @media (max-width: 768px) {
             .photo-frame {
                 width: 110px;
@@ -271,6 +271,42 @@
             }
             .photo-label {
                 font-size: 10px;
+            }
+
+            /* 标题区调小，防止遮挡照片，且一行显示不换行 */
+            .birthday-title h1 {
+                font-size: 1.5em;
+                margin-bottom: 4px;
+                white-space: nowrap;
+            }
+            .birthday-title .name {
+                font-size: 1.2em;
+                white-space: nowrap;
+            }
+            .birthday-title .subtitle {
+                font-size: 0.85em;
+                margin-top: 4px;
+                white-space: nowrap;
+            }
+
+            /* 操作提示调小 */
+            .instructions {
+                font-size: 11px;
+                padding: 10px;
+                max-width: 170px;
+                bottom: 70px;
+            }
+
+            /* 音乐按钮调小 */
+            .music-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+                right: 120px;
+            }
+
+            /* 加载提示调小 */
+            #loader {
+                font-size: 1.3em;
             }
         }
 

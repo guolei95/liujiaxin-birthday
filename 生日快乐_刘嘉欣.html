@@ -257,6 +257,23 @@
             75% { transform: rotate(-3deg); }
         }
 
+        /* 手机小屏适配：缩小相框，避免照片挤在一起 */
+        @media (max-width: 768px) {
+            .photo-frame {
+                width: 110px;
+                height: 130px;
+                padding: 9px;
+                border-radius: 6px;
+            }
+            .photo-content {
+                height: 90px;
+                margin-bottom: 6px;
+            }
+            .photo-label {
+                font-size: 10px;
+            }
+        }
+
         .birthday-title {
             position: absolute;
             top: 10%;
@@ -1135,6 +1152,10 @@
             frameContainer.innerHTML = '';
             
             // 不同的悬挂位置和线长 - 优化分布，避开中心区域
+            // 检测是否为手机小屏
+            const isMobile = window.innerWidth < 768;
+            const frameHalfWidth = isMobile ? 55 : 80;  // 相框宽度的一半（110px / 160px）
+
             const positions = [
                 { left: '5%', wireLength: 80, tilt: 'tilt-left' },      // 左侧边缘
                 { left: '15%', wireLength: 120, tilt: 'straight' },     // 左侧
@@ -1148,13 +1169,28 @@
                 { left: '75%', wireLength: 110, tilt: 'tilt-left' }     // 右侧中位
             ];
             
+            // 手机小屏用更分散的位置，避免相框挤在一起
+            if (isMobile) {
+                positions.length = 0;
+                positions.push(
+                    { left: '14%', wireLength: 55, tilt: 'tilt-left' },
+                    { left: '60%', wireLength: 85, tilt: 'tilt-right' },
+                    { left: '34%', wireLength: 42, tilt: 'straight' },
+                    { left: '80%', wireLength: 68, tilt: 'tilt-left' },
+                    { left: '20%', wireLength: 98, tilt: 'tilt-right' },
+                    { left: '70%', wireLength: 50, tilt: 'straight' }
+                );
+            }
+
             let currentFrameIndex = 0;
             
             function showNextFrame() {
                 if (photoFiles.length === 0) return;
                 
-                // 根据照片数量决定一次显示几个相框
-                const framesToShow = Math.min(photoFiles.length >= 5 ? 3 : photoFiles.length >= 3 ? 2 : 1, positions.length);
+                // 根据照片数量决定一次显示几个相框（手机小屏最多显示2个，避免挤在一起）
+                const framesToShow = isMobile
+                    ? Math.min(photoFiles.length >= 3 ? 2 : 1, positions.length)
+                    : Math.min(photoFiles.length >= 5 ? 3 : photoFiles.length >= 3 ? 2 : 1, positions.length);
                 
                 for (let i = 0; i < framesToShow; i++) {
                     const position = positions[i % positions.length];
@@ -1166,7 +1202,7 @@
 
                         // 计算居中位置，避免相框被裁剪
                         const leftPercentage = parseFloat(position.left);
-                        frame.style.left = `calc(${position.left} - 80px)`; // 80px是相框宽度的一半
+                        frame.style.left = `calc(${position.left} - ${frameHalfWidth}px)`; // 相框宽度的一半
 
                         // 设置线长和相框最终位置
                         const finalY = 50 + position.wireLength;
